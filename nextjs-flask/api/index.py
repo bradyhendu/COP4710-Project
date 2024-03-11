@@ -10,7 +10,7 @@ def hello_world():
 
 @app.route('/api/data', methods=['GET'])
 def get_data():
-    data = {"message": "Hello from Flask!"}
+    data = {"message": "Hello from Flask Backend!"}
     return jsonify(data)
 
 if __name__ == "__main__":
