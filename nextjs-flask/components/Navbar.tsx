@@ -115,8 +115,8 @@ function Navbar() {
                 fontFamily: 'monospace',
                 fontWeight: 700,
                 letterSpacing: '.3rem',
-                color: 'inherit',
-                textDecoration: 'none',
+                color: 'inhert',
+                textDecoratioin: 'none',
               }}
             >
               CINEFAN
@@ -167,11 +167,10 @@ function Navbar() {
             ) : (
                 <div>
                     <Link href="/login">
-                        <Button variant="contained" color="secondary">Login</Button>
+                      <button className='m-2 bg-primary hover:bg-secondary hover:text-dark text-muted py-2 px-4 rounded'>Login</button>
                     </Link>
                     <Link href="/register">
-                        <Button variant="contained" color="secondary"
-                    >Register</Button>
+                        <button className='m-2 bg-primary hover:bg-secondary hover:text-dark text-muted py-2 px-4 rounded'>Register</button>
                     </Link>
                 </div>
                )}
