@@ -16,7 +16,7 @@ import LocalMoviesIcon from '@mui/icons-material/LocalMovies';
 
 
 
-const pages = ['Movies', 'Actors', 'Directors', 'Genres'];
+const pages = ['Movies', 'Actors', 'Genres'];
 
 //CREDIT: https://mui.com/components/app-bar/#app-bar-with-responsive-menu !!!!
 
