@@ -11,6 +11,7 @@ DROP TABLE IF EXISTS Movie CASCADE;
 CREATE TABLE Movie(
     movieID VARCHAR(255) PRIMARY KEY,
     title VARCHAR(255),
+    genre VARCHAR(255),
     release_date DATE,
     duration TIME,
     directorID VARCHAR(255),
