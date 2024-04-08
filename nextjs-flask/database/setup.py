@@ -1,24 +1,16 @@
 import psycopg2
 import os
-from config import config
 
 def connect():
     connection = None
     try:
-        # params = config()
         print('Connecting to the database...')
-        # connection = psycopg2.connect(**params)
-        #double asterics work with dictionaries, we are saying we want to extract 
-            #everything inside of the parames, inside those two parenthesees and
-            #to conenct using the psychopg2 module
-
         connection = psycopg2.connect(
             host="localhost",
             database="MovieSearch",
             user="postgres",
             password="dbisFun@24"
         )
-
         print("Connected")
 
         #create a cursor
