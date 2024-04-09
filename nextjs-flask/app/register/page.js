@@ -19,7 +19,7 @@ const Register = () => {
     event.preventDefault()
     console.log(formData)
 
-    const response = fetch('http://localhost:3000/register', {
+    const response = fetch('http://localhost:8080/register', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
