@@ -18,13 +18,13 @@ def get_superuser_conn():
 
 @app.route('/register', methods=['POST'])
 def register_user():
-    print("On Login Page")
+    print("On Register Page")
     conn = get_superuser_conn()
     cur = conn.cursor()
     # Extract form data from the request
     data = request.json
     try:
-        print("Trying SELECT Query")
+        print("Trying SELECT Query to Find Identical User")
         cur.execute(
             "SELECT usename FROM pg_user WHERE usename = '" + str(data['username']) + "'")
         existing_user = cur.fetchone()
@@ -34,10 +34,11 @@ def register_user():
             return jsonify({'message': 'username already taken'}), 403
         else:
             print("Username Not Taken")
-            cur.execute("CREATE USER " + str(data['username']) + " WITH PASSWORD '" + str(data['password']) + "'")
-            print("Executed CREATE Query")
-            cur.exectute("GRANT movie_user TO '" + str(data['username']) + "'")
-            print("Executed GRANT Query")
+            cur.execute("CREATE USER \"" + str(data['username']) + "\" WITH PASSWORD '" + str(data['password']) + "'")
+            conn.commit()
+            print("Executed CREATE USER Query")
+            cur.execute("GRANT movie_user TO \"" + str(data['username']) + "\"")
+            print("Executed GRANT Permissions Query")
             conn.commit()
             session['username'] = data['username']
             print("Created User")
