@@ -10,7 +10,7 @@ app.secret_key = "i-am_secret,_sooooooo_so-secret"
 def get_superuser_conn():
     connection = psycopg2.connect(
         host="localhost",
-            database="moviesearch",
+            database="MovieSearch",
             user="postgres",
             password="dbisFun@24" #edit to match your password
     )
@@ -24,14 +24,20 @@ def register_user():
     # Extract form data from the request
     data = request.json
     try:
+        print("Trying SELECT Query")
         cur.execute(
-            "SELECT usename FROM pg_user WHERE usename = " + str(data['username']))
+            "SELECT usename FROM pg_user WHERE usename = '" + str(data['username']) + "'")
         existing_user = cur.fetchone()
+        print("Fetched User")
         if existing_user:
+            print("Username Taken")
             return jsonify({'message': 'username already taken'}), 403
         else:
+            print("Username Not Taken")
             cur.execute("CREATE USER " + str(data['username']) + " WITH PASSWORD '" + str(data['password']) + "'")
-            cur.exectute("GRANT movie_user TO " + str(data['username']))
+            print("Executed CREATE Query")
+            cur.exectute("GRANT movie_user TO '" + str(data['username']) + "'")
+            print("Executed GRANT Query")
             conn.commit()
             session['username'] = data['username']
             print("Created User")
