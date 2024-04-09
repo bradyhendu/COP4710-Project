@@ -1,8 +1,11 @@
---remove the '--' if you are setting up fore the first time
+--remove the '--' if you are setting up for the first time
 --CREATE ROLE movie_user;
 --GRANT SELECT ON Movie TO movie_user;
 --GRANT SELECT ON Actor TO movie_user;
 --GRANT INSERT ON Review TO movie_user;
+
+--This Command Makes it to Where Only Users Created in moviesearch Can Access this DB
+GRANT CONNECT ON DATABASE "moviesearch" TO PUBLIC;
 
 INSERT INTO Actor(actorID, fname, lname, DoB, since) VALUES
 ('APacino1940', 'Al', 'Pacino', '1940-04-25', 1967),
