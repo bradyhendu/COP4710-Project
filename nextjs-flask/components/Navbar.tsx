@@ -16,7 +16,7 @@ import LocalMoviesIcon from '@mui/icons-material/LocalMovies';
 
 
 
-const pages = ['Movies', 'Actors', 'Genres'];
+const pages = ['movies', 'actors', 'genres'];
 
 //CREDIT: https://mui.com/components/app-bar/#app-bar-with-responsive-menu !!!!
 
@@ -129,7 +129,7 @@ function Navbar() {
                 onClick={handleCloseNavMenu}
                 sx={{ my: 2, color: 'white', display: 'block' }}
               >
-                {page}
+                <Link href={'/' + page}>{page}</Link>
               </Button>
             ))}
           </Box>

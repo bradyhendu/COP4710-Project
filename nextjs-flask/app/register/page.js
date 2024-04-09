@@ -15,24 +15,26 @@ const Register = () => {
     setFormData({...formData, [name]: value})
   }
 
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault()
-    console.log(formData)
+    try {
+      const response = await fetch('http://localhost:8080/register', {
+          method: 'POST',
+          headers: {
+              'Content-Type': 'application/json'
+          },
+          credentials: 'include',
+          body: JSON.stringify(formData)
+      });
 
-    const response = fetch('http://localhost:8080/register', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      credentials: 'include',
-      body: JSON.stringify(formData)
-    })
-
-    if (response.ok) {
-      console.log('Account created successfully')
-    }else {
-      console.log('Failed to create account')
-    }
+      if (response.ok) {
+          window.location.href = '/';
+      } else {
+          console.log('Failed to create account');
+      }
+  } catch (error) {
+      console.error('Error:', error);
+  }
   }
 
   return (
