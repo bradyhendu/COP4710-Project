@@ -195,7 +195,7 @@ INSERT INTO Movie(movieID, title, release_date, duration, directorID, genre) VAL
 ('TheDa2008', 'The Dark Knight', '2008-07-18', '2:32:00', 'CNolan1970', 'Action, Crime, Drama'),
 ('TheDa2012', 'The Dark Knight Rises', '2012-07-20', '2:45:00', 'CNolan1970', 'Action, Crime, Drama'),
 ('TheGo1974', 'The Godfather: Part II', '1974-12-20', '3:22:00', 'FCoppola1939', 'Crime, Drama'),
-('TheLo2003', 'The Lord of the Rings: The Return of the King', '2003-12-17', '3:21:00', 'PJackson1952', 'Adventure, Fantasy');
+('TheLo2003', 'The Lord of the Rings: The Return of the King', '2003-12-17', '3:21:00', 'PJackson1952', 'Adventure, Fantasy'),
 ('TheLo2002', 'The Lord of the Rings: The Two Towers', '2002-12-18', '2:59:00', 'PJackson1952', 'Adventure, Fantasy'),
 ('TheMa1999', 'The Matrix', '1999-03-31', '2:16:00', 'LWachowski1965', 'Action, Sci-Fi'),
 ('ThePi2002', 'The Pianist', '2002-09-25', '2:30:00', 'RPolanski1933', 'Biography, Drama, War'),
