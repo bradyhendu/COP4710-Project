@@ -10,9 +10,9 @@ app.secret_key = "i-am_secret,_sooooooo_so-secret"
 def get_superuser_conn():
     connection = psycopg2.connect(
         host="localhost",
-            database="MovieSearch",
+            database="moviesearch", #mine is lowercase, update to match yours
             user="postgres",
-            password="dbisFun@24" #edit to match your password
+            password="Harley69?!" #edit to match your password
     )
     return connection
 
