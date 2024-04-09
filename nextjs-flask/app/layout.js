@@ -10,11 +10,7 @@ export const metadata = {
   description: 'Cinefan is a movie recommendation app.',
 }
 
-export default function RootLayout({
-  children,
-}: {
-  children: React.ReactNode
-}) {
+export default function RootLayout({ children }) {
   return (
     <html lang="en">
       <body className={'w-full ' + inter.className}>
@@ -22,5 +18,5 @@ export default function RootLayout({
         {children}
       </body>
     </html>
-  )
+  );
 }
