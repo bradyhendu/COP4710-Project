@@ -12,7 +12,7 @@ const Register = () => {
 
   const handleChange = (event) => {
     const {name, value} = event.target
-    setFormData(prevState => ({...prevState, [name]: value}));
+    setFormData({...formData, [name]: value})
   }
 
   const handleSubmit = (event) => {
