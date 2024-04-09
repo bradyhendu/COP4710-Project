@@ -6,9 +6,13 @@ from config import config
 def connect():
     connection = None
     try:
-        params = config()
         print('Connecting to the database...')
-        connection = psycopg2.connect(**params)
+        connection = psycopg2.connect(
+            host="localhost",
+            database="moviesearch",
+            user="postgres",
+            password="dbisFun@24" #edit to match your password
+        )
         print("Connected")
 
         #create a cursor
