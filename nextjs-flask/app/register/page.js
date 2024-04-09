@@ -27,6 +27,12 @@ const Register = () => {
       credentials: 'include',
       body: JSON.stringify(formData)
     })
+
+    if (response.ok) {
+      console.log('Account created successfully')
+    }else {
+      console.log('Failed to create account')
+    }
   }
 
   return (
