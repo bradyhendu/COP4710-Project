@@ -7,7 +7,9 @@ const Register = () => {
     username: '',
     email: '',
     password: '',
-    confirmPassword: ''
+    confirmPassword: '',
+    firstName: '',
+    lastName: ''
   })
 
   const handleChange = (event) => {
@@ -43,7 +45,11 @@ const Register = () => {
         <h1 className="text-5xl font-bold">Create an account</h1>
         <p className='mt-2'>Already have an account? <Link href='/login' className='text-secondary hover:text-accent'>Login</Link></p>
         <form className='mt-6 flex flex-col items-center' onSubmit={handleSubmit}>
-          <label htmlFor='username'>Username</label>
+          <label htmlFor='firstName'>First Name</label>
+          <input type='text' placeholder='First Name' className='p-2 rounded-lg text-dark' name='firstName' value={formData.firstName} onChange={handleChange}/>
+          <label htmlFor='lastName' className='mt-2' >Last Name</label>
+          <input type='text' placeholder='Last Name' className='p-2 rounded-lg text-dark' name='lastName' value={formData.lastName} onChange={handleChange}/>
+          <label htmlFor='username' className='mt-2'>Username</label>
           <input type='text' placeholder='Username' className='p-2 rounded-lg text-dark' name='username' value={formData.username} onChange={handleChange}/>
           <label htmlFor='email' className='mt-2'>Email</label>
           <input type='email' placeholder='Email' className='p-2  rounded-lg text-dark' name='email' value={formData.email} onChange={handleChange}/>
