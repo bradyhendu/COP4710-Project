@@ -52,3 +52,10 @@ CREATE TABLE Acts
     FOREIGN KEY (movieID) REFERENCES Movie(movieID),
     FOREIGN KEY (actorID) REFERENCES Actor(actorID)
 );
+
+DROP TABLE IF EXISTS Movie_Genre CASCADE;
+CREATE TABLE Movie_Genre(
+    movieID VARCHAR(255),
+    genre VARCHAR(255),
+    FOREIGN KEY (movieID) REFERENCES Movie(movieID)
+);
