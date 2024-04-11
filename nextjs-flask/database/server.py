@@ -12,9 +12,21 @@ def get_superuser_conn():
         host="localhost",
             database="moviesearch", #mine is lowercase, update to match yours
             user="postgres",
-            password="dbisFun@24" #edit to match your password
+            password="Harley69?!" #edit to match your password
     )
     return connection
+
+@app.route('/check_session', methods=['GET'])
+def check_session():
+    if 'username' in session:
+        return jsonify({'username': session['username']}), 200
+    else:
+        return jsonify({'username': None}), 200
+    
+@app.route('/logout', methods=['POST'])
+def logout():
+    session.pop('username', None)
+    return jsonify({'message': 'User logged out'}), 200
 
 @app.route('/register', methods=['POST'])
 def register_user():
