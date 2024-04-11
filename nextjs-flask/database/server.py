@@ -17,16 +17,18 @@ def get_superuser_conn():
     return connection
 
 @app.route('/check_session', methods=['GET'])
-def check_session():
+def check_session(): 
     if 'username' in session:
+        print("Session Exists")
         return jsonify({'username': session['username']}), 200
     else:
+        print("No Session")
         return jsonify({'username': None}), 200
     
 @app.route('/logout', methods=['POST'])
 def logout():
     session.pop('username', None)
-    return jsonify({'message': 'User logged out'}), 200
+    return jsonify({'message': 'success'}), 200
 
 @app.route('/register', methods=['POST'])
 def register_user():
