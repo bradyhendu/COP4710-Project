@@ -25,7 +25,7 @@ const Login = () => {
           body: JSON.stringify(formData)
       });
       if (response.ok) {
-          window.location.href = '/';
+          window.location.href = '/user';
       } else {
           console.log('Failed to login');
       }
