@@ -19,7 +19,6 @@ DROP TABLE IF EXISTS Movie CASCADE;
 CREATE TABLE Movie(
     movieID VARCHAR(255) PRIMARY KEY,
     title VARCHAR(255),
-    genre VARCHAR(255),
     release_date DATE,
     duration TIME,
     directorID VARCHAR(255),
@@ -33,14 +32,7 @@ CREATE TABLE Review(
     review_content TEXT,
     username VARCHAR(255),
     movieID VARCHAR(255),
-    FOREIGN KEY (movieID) REFERENCES Movie(movieID)
-);
-
-DROP TABLE IF EXISTS Likes CASCADE;
-CREATE TABLE Likes
-(
-    username VARCHAR(255) PRIMARY KEY,
-    movieID VARCHAR(255),
+    FOREIGN KEY (username) REFERENCES Movie_User(userID)
     FOREIGN KEY (movieID) REFERENCES Movie(movieID)
 );
 
