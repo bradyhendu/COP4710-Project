@@ -107,5 +107,97 @@ def login_user():
         cur.close()
         conn.close()
 
+@app.route('/getactors', methods=['GET'])
+def get_actors():
+    conn = get_superuser_conn()
+    cur = conn.cursor()
+    cur.execute("SELECT fname, lname \
+                    FROM Actor \
+                    INNER JOIN Acts ON Actor.actorID = Acts.actorID")
+    names = cur.fetchall()
+    cur.close()
+    conn.close()
+    return jsonify({'first_name': name[0], 'last_name': name[1]} for name in names)
+
+@app.route('/getactorsofmovie', methods=['GET'])
+def get_actors_of_movie():
+    conn = get_superuser_conn()
+    cur = conn.cursor()
+    data = request.json
+    cur.execute("SELECT fname, lname \
+                FROM Actor \
+                INNER JOIN Acts ON Actor.actorID = Acts.actorID \
+                INNER JOIN Movie ON Acts.movieID = Movie.movieID \
+                WHERE Movie.title = %s", (data['movie_title'],))
+    names = cur.fetchall()
+    cur.close()
+    conn.close()
+    return jsonify({'first_name': name[0], 'last_name': name[1]} for name in names)
+
+@app.route('/getmovies', methods=['GET'])
+def get_movies():
+    conn = get_superuser_conn()
+    cur = conn.cursor()
+    cur.execute("SELECT title FROM Movie")
+    movies = cur.fetchall()
+    cur.close()
+    conn.close()
+    return jsonify({'movie_title': movie[0]} for movie in movies)
+
+@app.route('/getmoviegenre', methods=['GET'])
+def get_movie_genre():
+    conn = get_superuser_conn()
+    cur = conn.cursor()
+    data = request.json
+    cur.execute("SELECT title FROM Movie WHERE genre = %s", (data['genre_type'],))
+    movies = cur.fetchall()
+    cur.close()
+    conn.close()
+    return jsonify({'movie_title': movie[0]} for movie in movies)
+
+@app.route('/getmoviesofactor', method=['GET'])
+def get_movies_of_actor():
+    conn = get_superuser_conn()
+    cur = conn.cursor()
+    data = request.json
+    cur.execute("SELECT title \
+                FROM Movie \
+                INNER JOIN Acts ON Movie.movieID = Acts.movieID \
+                INNER JOIN Actor ON Acts.actorID = Actor.actorID \
+                WHERE Actor.actorID = %s", (data['actor']))
+    movies = cur.fetchall()
+    cur.close()
+    conn.close()
+    return jsonify({'movie_title': movie[0]} for movie in movies)
+
+# NOTE: Functions Below Haven't Been Tested
+@app.route('/getreviews', methods=['GET'])
+def get_reviews():
+    conn = get_superuser_conn()
+    cur = conn.cursor()
+    data = request.json
+    cur.execute("SELECT username, rating, review_content \
+                FROM Review \
+                INNER JOIN Movie ON Review.movieID = Movie.movieID \
+                WHERE Movie.title = %s", data['movie_title'])
+    reviews = cur.fetchall()
+    cur.close()
+    conn.close()
+    return jsonify({'user_name': review[0], 'rating': review[1], 'content': review[2]} for review in reviews)
+
+@app.route('/getrating', methods=['GET'])
+def get_ratings(title):
+    conn = get_superuser_conn()
+    cur = conn.cursor()
+    data = request.json
+    cur.execute("SELECT AVG(rating) \
+                FROM Review \
+                INNER JOIN Movie ON Review.movieID = Movie.movieID \
+                WHERE movieID = %s GROUP BY Movie.title", (title,))
+    rating = cur.fetchone()
+    cur.close()
+    conn.close()
+    return jsonify(rating)
+
 if __name__ == "__main__":
     app.run(debug=True, port=8080)
