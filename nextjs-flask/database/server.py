@@ -186,14 +186,14 @@ def get_reviews():
     return jsonify({'user_name': review[0], 'rating': review[1], 'content': review[2]} for review in reviews)
 
 @app.route('/getrating', methods=['GET'])
-def get_ratings(title):
+def get_ratings():
     conn = get_superuser_conn()
     cur = conn.cursor()
     data = request.json
     cur.execute("SELECT AVG(rating) \
                 FROM Review \
                 INNER JOIN Movie ON Review.movieID = Movie.movieID \
-                WHERE movieID = %s GROUP BY Movie.title", (title,))
+                WHERE movieID = %s GROUP BY Movie.title", (data['title']),)
     rating = cur.fetchone()
     cur.close()
     conn.close()
