@@ -32,7 +32,7 @@ CREATE TABLE Review(
     review_content TEXT,
     username VARCHAR(255),
     movieID VARCHAR(255),
-    FOREIGN KEY (username) REFERENCES Movie_User(userID)
+    FOREIGN KEY (username) REFERENCES Movie_User(userID),
     FOREIGN KEY (movieID) REFERENCES Movie(movieID)
 );
 

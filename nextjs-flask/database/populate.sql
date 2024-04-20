@@ -1,6 +1,6 @@
 GRANT CONNECT ON DATABASE "moviesearch" TO PUBLIC;
 
-CREATE ROLE movie_user;
+--CREATE ROLE movie_user;
 GRANT SELECT ON Movie TO movie_user;
 GRANT SELECT ON Actor TO movie_user;
 GRANT INSERT ON Review TO movie_user;
