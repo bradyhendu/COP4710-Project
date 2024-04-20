@@ -27,7 +27,7 @@ CREATE TABLE Movie(
 
 DROP TABLE IF EXISTS Review CASCADE;
 CREATE TABLE Review(
-    reviewID VARCHAR(255) PRIMARY KEY,
+    reviewID SERIAL PRIMARY KEY,
     rating DECIMAL(2, 1),
     review_content TEXT,
     username VARCHAR(255),
