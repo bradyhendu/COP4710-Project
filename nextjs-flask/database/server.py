@@ -243,7 +243,7 @@ def recommendation_list():
                     INNER JOIN Movie_Genre ON Movie.movieID = Movie_Genre.movieID \
                     WHERE genre = %s OR genre = %s OR genre = %s \
                     ORDER BY random() \
-                    LIMIT 3", (genres[0], genres[1], genres[2]))
+                    LIMIT 10", (genres[0], genres[1], genres[2]))
         movies = cur.fetchall()
         cur.close()
         conn.close()
