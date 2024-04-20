@@ -194,7 +194,7 @@ def get_movies_of_actor():
     conn.close()
     return jsonify({'movie_title': movie[0]} for movie in movies)
 
-# NOTE: Functions Below Haven't Been Tested
+# NOTE: Function Below Haven't Been Tested
 @app.route('/getreviews', methods=['GET'])
 def get_reviews():
     conn = get_superuser_conn()
@@ -203,25 +203,55 @@ def get_reviews():
     cur.execute("SELECT username, rating, review_content \
                 FROM Review \
                 INNER JOIN Movie ON Review.movieID = Movie.movieID \
-                WHERE Movie.title = %s", data['movie_title'])
+                WHERE Movie.title = %s", (data['movie_title'],))
     reviews = cur.fetchall()
     cur.close()
     conn.close()
     return jsonify({'user_name': review[0], 'rating': review[1], 'content': review[2]} for review in reviews)
 
 @app.route('/getrating', methods=['GET'])
-def get_ratings():
+def get_rating():
     conn = get_superuser_conn()
     cur = conn.cursor()
     data = request.json
-    cur.execute("SELECT AVG(rating) \
+    cur.execute("SELECT AVG(rating)::REAL \
                 FROM Review \
                 INNER JOIN Movie ON Review.movieID = Movie.movieID \
-                WHERE movieID = %s GROUP BY Movie.title", (data['title']),)
+                WHERE Movie.title = %s \
+                GROUP BY Movie.title", (data['title'],))
     rating = cur.fetchone()
     cur.close()
     conn.close()
     return jsonify(rating)
+
+@app.route('/recommendations', methods=['GET'])
+def recommendation_list():
+    conn = get_superuser_conn()
+    cur = conn.cursor()
+    # I Could Be Wrong About Using session['username']
+    cur.execute("SELECT genre, COUNT(genre) \
+                FROM Movie_Genre \
+                INNER JOIN Review ON Movie_Genre.movieID = Review.movieID \
+                INNER JOIN Movie ON Movie_Genre.movieID = Movie.movieID \
+                WHERE username = %s AND rating >= 4.0 \
+                GROUP BY genre \
+                ORDER BY COUNT(genre) DESC LIMIT 3", (session['username'],))
+    genres = cur.fetchall()
+    if genres is not None:
+        cur.execute("SELECT title \
+                    FROM Movie \
+                    INNER JOIN Movie_Genre ON Movie.movieID = Movie_Genre.movieID \
+                    WHERE genre = %s OR genre = %s OR genre = %s \
+                    ORDER BY random() \
+                    LIMIT 3", (genres[0], genres[1], genres[2]))
+        movies = cur.fetchall()
+        cur.close()
+        conn.close()
+        return jsonify({'title': movie[0]} for movie in movies)
+    else:
+        cur.close()
+        conn.close()
+        return jsonify({'message': 'No Recommendations At the Moment'})
 
 if __name__ == "__main__":
     app.run(debug=True, port=8080)
