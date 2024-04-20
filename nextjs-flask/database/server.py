@@ -119,20 +119,41 @@ def get_actors():
     conn.close()
     return jsonify([{"actor_name": actor[0] + " " + actor[1], "actor_id": actor[2]} for actor in actors])
 
-@app.route('/getactorsofmovie', methods=['GET'])
+@app.route('/getactorsofmovie', methods=['POST'])
 def get_actors_of_movie():
     conn = get_superuser_conn()
     cur = conn.cursor()
     data = request.json
-    cur.execute("SELECT fname, lname \
+    print(data)
+    cur.execute("SELECT fname, lname, Actor.actorID\
                 FROM Actor \
                 INNER JOIN Acts ON Actor.actorID = Acts.actorID \
                 INNER JOIN Movie ON Acts.movieID = Movie.movieID \
-                WHERE Movie.title = %s", (data['movie_title'],))
-    names = cur.fetchall()
+                WHERE Movie.movieID = %s", (data['movie_id'],))
+    actors = cur.fetchall()
     cur.close()
     conn.close()
-    return jsonify({'first_name': name[0], 'last_name': name[1]} for name in names)
+    return jsonify([{"actor_name": actor[0] + " " + actor[1], "actor_id": actor[2]} for actor in actors])
+
+@app.route('/movies/<string:movie_id>', methods=['GET'])
+def get_movie_details(movie_id):
+    conn = get_superuser_conn()
+    cur = conn.cursor()
+    cur.execute("SELECT title, release_date, duration \
+                FROM Movie WHERE movieID = %s", (movie_id,))
+    movie = cur.fetchone()
+    cur.close()
+    conn.close()
+    #convert time to string
+    if movie is None:
+        # No movie found, return an appropriate response
+        return jsonify({"error": "No movie found with the provided ID"}), 404
+
+    # Convert time to string
+    movie = list(movie)
+    movie[2] = str(movie[2])
+    
+    return jsonify({'title': movie[0], 'release_date': movie[1], 'duration': movie[2]})
 
 @app.route('/getmovies', methods=['GET'])
 def get_movies():
