@@ -14,7 +14,7 @@ def get_superuser_conn():
         host="localhost",
             database="moviesearch", #mine is lowercase, update to match yours
             user="postgres",
-            password="Harley69?!" #edit to match your password
+            password="dbisFun@24" #edit to match your password
     )
     return connection
 
@@ -159,7 +159,10 @@ def get_movie_details(movie_id):
 def get_movies():
     conn = get_superuser_conn()
     cur = conn.cursor()
-    cur.execute("SELECT title, movieid FROM Movie")
+    cur.execute("SELECT title, string_agg(genre, ', ') \
+                FROM Movie \
+                INNER JOIN Movie_Genre ON Movie.movieID = Movie_Genre.movieID \
+                GROUP BY Movie.title")
     movies = cur.fetchall()
     cur.close()
     conn.close()
@@ -185,7 +188,7 @@ def get_movies_of_actor():
                 FROM Movie \
                 INNER JOIN Acts ON Movie.movieID = Acts.movieID \
                 INNER JOIN Actor ON Acts.actorID = Actor.actorID \
-                WHERE Actor.actorID = %s", (data['actor']))
+                WHERE Actor.actorID = %s", (data['actor'],))
     movies = cur.fetchall()
     cur.close()
     conn.close()
