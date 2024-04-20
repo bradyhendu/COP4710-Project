@@ -14,7 +14,7 @@ def get_superuser_conn():
         host="localhost",
             database="moviesearch", #mine is lowercase, update to match yours
             user="postgres",
-            password="dbisFun@24" #edit to match your password
+            password="Harley69?!" #edit to match your password
     )
     return connection
 
@@ -111,13 +111,13 @@ def login_user():
 def get_actors():
     conn = get_superuser_conn()
     cur = conn.cursor()
-    cur.execute("SELECT fname, lname \
+    cur.execute("SELECT fname, lname, Actor.actorID \
                     FROM Actor \
                     INNER JOIN Acts ON Actor.actorID = Acts.actorID")
-    names = cur.fetchall()
+    actors = cur.fetchall()
     cur.close()
     conn.close()
-    return jsonify({'first_name': name[0], 'last_name': name[1]} for name in names)
+    return jsonify([{"actor_name": actor[0] + " " + actor[1], "actor_id": actor[2]} for actor in actors])
 
 @app.route('/getactorsofmovie', methods=['GET'])
 def get_actors_of_movie():
@@ -138,11 +138,11 @@ def get_actors_of_movie():
 def get_movies():
     conn = get_superuser_conn()
     cur = conn.cursor()
-    cur.execute("SELECT title FROM Movie")
+    cur.execute("SELECT title, movieid FROM Movie")
     movies = cur.fetchall()
     cur.close()
     conn.close()
-    return jsonify({'movie_title': movie[0]} for movie in movies)
+    return jsonify([{'movie_title': movie[0], 'movie_id': movie[1]} for movie in movies])
 
 @app.route('/getmoviegenre', methods=['GET'])
 def get_movie_genre():
@@ -155,7 +155,7 @@ def get_movie_genre():
     conn.close()
     return jsonify({'movie_title': movie[0]} for movie in movies)
 
-@app.route('/getmoviesofactor', method=['GET'])
+@app.route('/getmoviesofactor', methods=['GET'])
 def get_movies_of_actor():
     conn = get_superuser_conn()
     cur = conn.cursor()
