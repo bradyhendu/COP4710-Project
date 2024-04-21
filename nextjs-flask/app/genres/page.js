@@ -16,11 +16,11 @@ const Genres = () => {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-    const response = await fetch('https://localhost:8080/getmoviegenre', {
+    const response = await fetch('http://localhost:8080/getmoviegenre', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       credentials: 'include',
-      body: JSON.stringify(formData)
+      body: JSON.stringify(formData),
     });
 
     if (response.ok) {
