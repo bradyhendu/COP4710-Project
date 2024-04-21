@@ -256,7 +256,6 @@ INSERT INTO Acts(movieID, actorID) VALUES
 ('TheDe2006', 'MDamon1970'),
 ('TheDe2006', 'JNicholson1952'),
 ('TheGo1972', 'MBrando1924'),
-('TheGo1972', 'APacino1940'),
 ('TheGo1972', 'JCaan1940'),
 ('TheGr2014', 'RFiennes1962'),
 ('TheGr2014', 'ARevolori1996'),
