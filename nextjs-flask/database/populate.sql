@@ -207,9 +207,9 @@ INSERT INTO Movie(movieID, title, release_date, duration, directorID) VALUES
 ('TheTr1998', 'The Truman Show', '1998-06-05', '1:43:00', 'PWeir1944');
 
 INSERT INTO Acts(movieID, actorID) VALUES
-('TheGo1972', 'APacino1940'),
-('TheGo1972', 'DKeaton1946'),
-('TheGo1972', 'AGarcia1956'),
+('TheGo1990', 'APacino1940'),
+('TheGo1990', 'DKeaton1946'),
+('TheGo1990', 'AGarcia1956'),
 ('Backt1989', 'MFox1961'),
 ('Backt1989', 'CLloyd1938'),
 ('Backt1989', 'LThompson1961'),
@@ -257,6 +257,7 @@ INSERT INTO Acts(movieID, actorID) VALUES
 ('TheDe2006', 'JNicholson1952'),
 ('TheGo1972', 'MBrando1924'),
 ('TheGo1972', 'JCaan1940'),
+('TheGo1972', 'APacino1940'),
 ('TheGr2014', 'RFiennes1962'),
 ('TheGr2014', 'ARevolori1996'),
 ('TheGr2014', 'FAbraham1939'),
