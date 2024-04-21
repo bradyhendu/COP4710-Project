@@ -47,7 +47,7 @@ const Movies = () => {
           <div key={index} className="m-2 p-2 border-2 border-black rounded-lg bg-primary">
             <Link href={`/movies/${movie.movie_id}`}> 
                 <h2 className="text-2xl font-bold text-white">{movie.movie_title}</h2>
-                <p className="text-white">{movie.movie_id}</p>
+                <p className="text-white">{movie.genres}</p>
             </Link>
           </div>
         ))}

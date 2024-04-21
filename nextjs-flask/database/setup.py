@@ -9,7 +9,7 @@ def connect():
             host="localhost",
             database="moviesearch",
             user="postgres",
-            password="Harley69?!" #edit to match your password
+            password="dbisFun@24" #edit to match your password
         )
         print("Connected")
 
