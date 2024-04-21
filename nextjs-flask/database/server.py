@@ -206,16 +206,18 @@ def get_movies():
     conn.close()
     return jsonify([{'movie_title': movie[0], 'movie_id': movie[1], 'genres': movie[2]} for movie in movies])
 
-@app.route('/getmoviegenre', methods=['GET'])
+@app.route('/getmoviegenre', methods=['POST'])
 def get_movie_genre():
+    print("Getting Movies Based On Genre")
     conn = get_superuser_conn()
     cur = conn.cursor()
     data = request.json
-    cur.execute("SELECT title FROM Movie WHERE genre = %s", (data['genre_type'],))
+    print(data)
+    cur.execute("SELECT title, movieID FROM Movie WHERE genre = %s", (data['genre_type'],))
     movies = cur.fetchall()
     cur.close()
     conn.close()
-    return jsonify({'movie_title': movie[0]} for movie in movies)
+    return jsonify([{'movie_title': movie[0], 'movie_id': movie[1]} for movie in movies])
 
 # NOTE: Function Below Haven't Been Tested
 @app.route('/getreviews', methods=['GET'])
@@ -230,7 +232,7 @@ def get_reviews():
     reviews = cur.fetchall()
     cur.close()
     conn.close()
-    return jsonify({'user_name': review[0], 'rating': review[1], 'content': review[2]} for review in reviews)
+    return jsonify([{'user_name': review[0], 'rating': review[1], 'content': review[2]} for review in reviews])
 
 @app.route('/getrating', methods=['GET'])
 def get_rating():
