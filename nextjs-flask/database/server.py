@@ -213,7 +213,10 @@ def get_movie_genre():
     cur = conn.cursor()
     data = request.json
     print(data)
-    cur.execute("SELECT title, movieID FROM Movie WHERE genre = %s", (data['genre_type'],))
+    cur.execute("SELECT title, Movie.movieID \
+                FROM Movie \
+                INNER JOIN Movie_Genre ON Movie.movieID = Movie_Genre.movieID \
+                WHERE genre = %s", (data['movie_genre'].lower().capitalize(),))
     movies = cur.fetchall()
     cur.close()
     conn.close()
