@@ -177,8 +177,11 @@ def get_movie_details(movie_id):
     print(movie_id)
     conn = get_superuser_conn()
     cur = conn.cursor()
-    cur.execute("SELECT title, release_date, duration \
-                FROM Movie WHERE movieID = %s", (movie_id,))
+    cur.execute("SELECT title, release_date, duration, string_agg(genre, ', ') \
+                FROM Movie \
+                INNER JOIN Movie_Genre ON Movie.movieID = Movie_Genre.movieID \
+                WHERE Movie.movieID = %s \
+                GROUP BY Movie.title, Movie.movieID", (movie_id,))
     movie = cur.fetchone()
     cur.close()
     conn.close()
@@ -191,7 +194,7 @@ def get_movie_details(movie_id):
     movie = list(movie)
     movie[2] = str(movie[2])
     
-    return jsonify({'title': movie[0], 'release_date': movie[1], 'duration': movie[2]})
+    return jsonify({'title': movie[0], 'release_date': movie[1], 'duration': movie[2], 'genres': movie[3]})
 
 @app.route('/getmovies', methods=['GET'])
 def get_movies():
