@@ -14,7 +14,7 @@ def get_superuser_conn():
         host="localhost",
             database="moviesearch", #mine is lowercase, update to match yours
             user="postgres",
-            password="dbisFun@24" #edit to match your password
+            password="Harley69?!" #edit to match your password
     )
     return connection
 
