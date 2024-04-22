@@ -43,7 +43,7 @@ const Genres = () => {
           value = {formData.movie_genre}
           onChange={handleChange}
         />
-        <button type="submit" className="bg-secondary hover:bg-mnuted text-white hover:text-secondary rounded-lg py-2">Search Genre</button>
+        <button type="submit" className="bg-primary hover:bg-secondary text-white hover:text-primary rounded-lg py-2">Search Genre</button>
       </form>
       <div className="flex flex-wrap justify-center">
         {movies.map((movie, index) => (

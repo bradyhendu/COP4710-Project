@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import React, { useEffect, useState, useCallback } from 'react';
+import React, { useEffect, useState, useCallback, use } from 'react';
 
 const Page = ({ params }) => {
     const [movie, setMovie] = useState({});
@@ -36,6 +36,26 @@ const Page = ({ params }) => {
             console.error('Failed to fetch movie actors');
         }
     }, [params.movieId]);
+
+    const addReview = useCallback(async (event) => {
+        event.preventDefault();
+        const response = await fetch(`http://localhost:8080/addreview`, {
+            method: 'POST',
+            credentials: 'include',
+            body: JSON.stringify({
+                movie_id: params.movieId,
+                review: event.target.review.value,
+            }),
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        });
+        if (response.ok) {
+            fetchMovieDetails();
+        } else {
+            console.error('Failed to add review');
+        }
+    }, [params.movieId, fetchMovieDetails]);
     
     
     useEffect(() => {
@@ -45,7 +65,7 @@ const Page = ({ params }) => {
 
     return (
     <div className="flex items-center flex-col justify-center mt-20">
-        <h1 className='text-5xl font-bold text-white'>{movie.title}</h1>
+        <h1 className='text-5xl font-bold text-white text-center'>{movie.title}</h1>
         <div className='flex flex-row mt-8'>
             <p className='text-white'>Duration: {movie.duration}, Released: {movie.release_date}</p>
         </div>

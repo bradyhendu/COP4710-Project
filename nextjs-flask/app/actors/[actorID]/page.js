@@ -44,7 +44,7 @@ const Page = ({ params }) => {
     }, [fetchActorDetails]); 
 
     return (
-    <div className="flex items-center flex-col justify-center mt-20">
+    <div className="flex items-center flex-col justify-center mt-20 text-center">
         <h1 className='text-5xl font-bold text-white'>{actor.name}</h1>
         <div className='flex flex-row mt-8'>
             <p className='text-white'>DoB: {actor.date_of_birth}, Acting Since: {actor.since}</p>
