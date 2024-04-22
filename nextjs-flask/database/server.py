@@ -177,8 +177,11 @@ def get_movie_details(movie_id):
     print(movie_id)
     conn = get_superuser_conn()
     cur = conn.cursor()
-    cur.execute("SELECT title, release_date, duration \
-                FROM Movie WHERE movieID = %s", (movie_id,))
+    cur.execute("SELECT title, release_date, duration, string_agg(genre, ', ') \
+                FROM Movie \
+                INNER JOIN Movie_Genre ON Movie.movieID = Movie_Genre.movieID \
+                WHERE Movie.movieID = %s \
+                GROUP BY Movie.title, Movie.movieID", (movie_id,))
     movie = cur.fetchone()
     cur.close()
     conn.close()
@@ -191,7 +194,7 @@ def get_movie_details(movie_id):
     movie = list(movie)
     movie[2] = str(movie[2])
     
-    return jsonify({'title': movie[0], 'release_date': movie[1], 'duration': movie[2]})
+    return jsonify({'title': movie[0], 'release_date': movie[1], 'duration': movie[2], 'genres': movie[3]})
 
 @app.route('/getmovies', methods=['GET'])
 def get_movies():
@@ -223,19 +226,20 @@ def get_movie_genre():
     return jsonify([{'movie_title': movie[0], 'movie_id': movie[1]} for movie in movies])
 
 # NOTE: Function Below Haven't Been Tested
-@app.route('/getreviews', methods=['GET'])
+@app.route('/getreviews', methods=['POST'])
 def get_reviews():
     conn = get_superuser_conn()
     cur = conn.cursor()
     data = request.json
+    print(data)
     cur.execute("SELECT username, rating, review_content \
                 FROM Review \
                 INNER JOIN Movie ON Review.movieID = Movie.movieID \
-                WHERE Movie.title = %s", (data['movie_title'],))
+                WHERE Movie.movieid = %s", (data['movie_id'],))
     reviews = cur.fetchall()
     cur.close()
     conn.close()
-    return jsonify([{'user_name': review[0], 'rating': review[1], 'content': review[2]} for review in reviews])
+    return jsonify([{'username': review[0], 'rating': review[1], 'review': review[2]} for review in reviews])
 
 @app.route('/getrating', methods=['GET'])
 def get_rating():
@@ -287,10 +291,11 @@ def add_review():
     cur = conn.cursor()
     data = request.json
     try:
-        cur.execute("SELECT movieID FROM Movie WHERE movieID = %S", (data['movie_ID'],))
+        cur.execute("SELECT movieID FROM Movie WHERE movieID = %s", (data['movie_id'],))
         movie = cur.fetchone()
         cur.execute("INSERT INTO Review(rating, review_content, username, movieID) VALUES \
-                    (%s, %s, %s, %s)", (data['rate'], data['content'], data['user_name'], movie,))
+                    (%s, %s, %s, %s)", (data['rating'], data['review'], session['username'], movie,))
+        conn.commit()
         return jsonify({'message': 'Review Added Successfully'})
     except Exception as e:
         return {'message': 'Internal Server Error', 'error': str(e)}, 500  # Internal Server Error
