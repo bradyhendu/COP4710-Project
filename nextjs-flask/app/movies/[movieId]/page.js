@@ -99,7 +99,8 @@ const Page = ({ params }) => {
     return (
     <div className="flex items-center flex-col justify-center mt-20">
         <h1 className='text-5xl font-bold text-white text-center'>{movie.title}</h1>
-        <div className='flex flex-row mt-8'>
+        <div className='flex flex-col my-4 text-center'>
+            <h4 className='text-white text-xl'>Genre(s): {movie.genres}</h4>
             <p className='text-white'>Duration: {movie.duration}, Released: {movie.release_date}</p>
         </div>
         <button onClick={() => setOpen(!open)} className='bg-primary hover:bg-secondary text-white hover:text-primary rounded-lg p-2 mt-4'>Add Review</button>
