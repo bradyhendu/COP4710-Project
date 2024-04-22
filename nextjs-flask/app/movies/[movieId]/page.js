@@ -69,6 +69,9 @@ const Page = ({ params }) => {
         <div className='flex flex-row mt-8'>
             <p className='text-white'>Duration: {movie.duration}, Released: {movie.release_date}</p>
         </div>
+        <div className='flex flex-row mt-8'>
+            <p className='text-white'>Genres: {movie.genres}</p>
+        </div>
         <h2 className='text-3xl font-bold text-white mt-20'>Actors</h2>
         <div className='flex flex-wrap justify-center'>
             {movieActors.map((actor, index) => (
