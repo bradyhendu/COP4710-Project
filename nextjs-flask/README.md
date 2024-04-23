@@ -76,3 +76,24 @@ To learn more about Next.js, take a look at the following resources:
 - [Flask Documentation](https://flask.palletsprojects.com/en/1.1.x/) - learn about Flask features and API.
 
 You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
+
+This application is made using the PostgreSQL database. To create a more secure login for our users, we used PostgreSQL's feature of roles/users. When the user registers an account for the sight, the password is encrypted using MD5. For us to test and run the application, we need to change the password encryption method of the PostgreSQL database to MD5, as it defaults the SCRAM-SHA-256.
+
+To change it on a MAC device:
+
+- Open SQL Shell (Don't Close Shell Until Procedure is Complete and Functional)
+- Type: SET password_encryption = 'md5';
+- Reset Your postgres superuser's password (Now, Your Password for postgres Should Be Encrypted Using MD5)
+- Open Terminal, Go to the Directory /Library/PostgreSQL/16/data (Again, Don't Close Terminal)
+- Type sudo -su postgres, Then Type in Your MAC Login
+- Edit the File pg_hba.conf (Preferably with VIM) by Changing All Instances of scram-sha-256 to md5, Save w/ :wq (if Using VIM)
+- Edit the File postgresql.conf (Must Be VIM) by Changing scram-sha-256 on the Line '#password_encryption...' to md5 (Also Remove # in Front of password_encryption), Save w/ :wq!
+  - As postgresql.conf isn't Supposed to Be Modified, It'll Most Like Tell You that You Can't Edit the File, and Exit the File, So Continue Trying (Should Take Only a Few Tries) Until Asked If You're Sure You Want to Edit the File, Type y for 'Yes.'
+- Open Back Up the SQL Shell You Initially Opened, and Type SELECT pg_reload_conf();
+- Open Up a New SQL Shell, and Login As You Normally Would
+  - If Successful the 1st Time, Everything is Good to Go!; You Can Move onto Setting Up the Next.js Application
+  - If Not, Make Sure the Files are Edited Correctly and Repeat the Steps From There
+
+To change it on a Windows device (using PowerShell), the steps are the same, but you don't need to type sudo -su postgres, as sudo isn't a command on Windows. Also, editing tools like nano or vim don't work on Windows. Instead use notepad.exe <file_name> to edit the changes mentioned above.
+
+Hope you were able to change the encryption method for creating roles and users!
