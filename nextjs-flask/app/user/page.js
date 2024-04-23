@@ -6,6 +6,7 @@ import Link from 'next/link';
 const User = () => {
   const [movies, setMovies] = useState([])
   const [user, setUser] = useState({})
+  const [recommendedMovies, setRecommendedMovies] = useState([])
 
   const fetchReviewedMovies = useCallback(async () => {
     const response = await fetch('http://localhost:8080/user-reviewed-movies', {
@@ -24,6 +25,16 @@ const User = () => {
     if (response.ok) {
       const data = await response.json();
       setUser(data)
+    }
+  }, []);
+
+  const fetchRecommendedMovies = useCallback(async () => {
+    const response = await fetch('http://localhost:8080/recommendations', {
+      credentials: 'include',
+    });
+    if (response.ok) {
+      const data = await response.json();
+      setRecommendedMovies(data)
     }
   }, []);
   
