@@ -8,6 +8,7 @@ const Page = ({ params }) => {
     const [movie, setMovie] = useState({});
     const [open, setOpen] = useState(false);
     const [user, setUser] = useState({});
+    const [movieRating, setMovieRating] = useState(0.0);
     const [formData, setFormData] = useState({
         rating: 3,
         review: '',
@@ -71,6 +72,23 @@ const Page = ({ params }) => {
         }
     }, []);
 
+    const fetchMovieRating = useCallback(async () => {
+        const response = await fetch(`http://localhost:8080/getrating`, {
+            method: 'POST',
+            credentials: 'include',
+            body: JSON.stringify({ movie_id: params.movieId }),
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        });
+        if (response.ok) {
+            const data = await response.json();
+            setMovieRating(data);
+        } else {
+            console.error('Failed to fetch movie rating');
+        }
+    }, [params.movieId]);
+
     const addReview = useCallback(async (event) => {
         event.preventDefault();
         const response = await fetch(`http://localhost:8080/addreview`, {
@@ -88,7 +106,7 @@ const Page = ({ params }) => {
         } else {
             console.error('Failed to add review');
         }
-    }, [formData, fetchMovieReviews]);
+    }, [formData, fetchMovieReviews, fetchMovieRating]);
 
     const handleChange = (event, newValue) => {
         const { name } = event.target;
@@ -98,7 +116,6 @@ const Page = ({ params }) => {
             const { value } = event.target;
             setFormData(prevState => ({ ...prevState, [name]: value }));
         }
-        console.log(formData)
     };
 
     const deleteReview = async (reviewId) => {
@@ -114,6 +131,7 @@ const Page = ({ params }) => {
         
         if (response.ok) {
             fetchMovieReviews();
+            fetchMovieRating();
         } else {
             console.error('Failed to delete review');
         }
@@ -125,12 +143,17 @@ const Page = ({ params }) => {
         fetchMovieActors();
         fetchMovieReviews();
         fetchUserDetails();
-    }, [fetchMovieDetails, fetchMovieActors, fetchMovieReviews, fetchUserDetails]); 
+        fetchMovieRating();
+    }, [fetchMovieDetails, fetchMovieActors, fetchMovieReviews, fetchUserDetails, fetchMovieRating]); 
 
     return (
     <div className="flex items-center flex-col justify-center mt-10">
         <h1 className='text-5xl font-bold text-white text-center'>{movie.title}</h1>
-        <div className='flex flex-col my-4 text-center'>
+        <div className='flex flex-col my-4 text-center '>
+            <div className='flex flex-row justify-center items-center m-4 bg-primary rounded-md p-4'>
+                <h4 className='text-white text-xl'>User's Average Rating: </h4>
+                <Rating name='read-only' value={movieRating} precision={0.5} readOnly/>
+            </div>
             <h4 className='text-white text-xl'>Genre(s): {movie.genres}</h4>
             <p className='text-white'>Duration: {movie.duration}, Released: {movie.release_date}</p>
         </div>

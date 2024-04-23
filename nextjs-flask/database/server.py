@@ -237,7 +237,7 @@ def get_reviews():
     conn.close()
     return jsonify([{'username': review[0], 'rating': review[1], 'review': review[2], 'review_id': review[3]} for review in reviews])
 
-@app.route('/getrating', methods=['GET'])
+@app.route('/getrating', methods=['POST'])
 def get_rating():
     conn = get_superuser_conn()
     cur = conn.cursor()
@@ -245,8 +245,8 @@ def get_rating():
     cur.execute("SELECT AVG(rating)::REAL \
                 FROM Review \
                 INNER JOIN Movie ON Review.movieID = Movie.movieID \
-                WHERE Movie.title = %s \
-                GROUP BY Movie.title", (data['title'],))
+                WHERE Movie.movieID = %s \
+                GROUP BY Movie.title", (data['movie_id'],))
     rating = cur.fetchone()
     cur.close()
     conn.close()
