@@ -35,13 +35,15 @@ const User = () => {
     if (response.ok) {
       const data = await response.json();
       setRecommendedMovies(data)
+      console.log(data)
     }
   }, []);
   
   useEffect(() => {
     fetchReviewedMovies()
     fetchUserDetails()
-  }, [fetchReviewedMovies, fetchUserDetails])
+    fetchRecommendedMovies()
+  }, [fetchReviewedMovies, fetchUserDetails, fetchRecommendedMovies])
 
   return (
     <div className='flex flex-col justify-center items-center mt-10 text-center'>
@@ -64,6 +66,16 @@ const User = () => {
         </div>
       )}
       <h2 className='text-3xl font-bold text-white mt-10'>Looking for new movies? Here's our recomendations:</h2>
+      <div className="flex flex-wrap justify-center text-left">
+        {recommendedMovies.map((movie, index) => (
+          <div key={index} className="m-2 p-2 border-2 border-black rounded-lg bg-primary">
+            <Link href={`/movies/${movie.movie_id}`}> 
+                <h2 className="text-2xl font-bold text-white">{movie.title}</h2>
+                <p className='text-white'>{movie.genres}</p>
+            </Link>
+          </div>
+        ))}
+      </div>
     </div>
   )
 }

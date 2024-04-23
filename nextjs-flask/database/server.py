@@ -14,7 +14,7 @@ def get_superuser_conn():
         host="localhost",
             database="moviesearch", #mine is lowercase, update to match yours
             user="postgres",
-            password="dbisFun@24" #edit to match your password
+            password="Harley69?!" #edit to match your password
     )
     return connection
 
@@ -265,30 +265,33 @@ def recommendation_list():
                 ORDER BY COUNT(genre) DESC LIMIT 3", (session['username'],))
     genres = cur.fetchall()
     if len(genres) == 1:
-        cur.execute("SELECT title, string_agg(genre, ', ') \
+        cur.execute("SELECT title, string_agg(genre, ', '), Movie.movieID \
                     FROM Movie \
                     INNER JOIN Movie_Genre ON Movie.movieID = Movie_Genre.movieID \
-                    WHERE genre = %s OR genre = %s OR genre = %s \
+                    WHERE genre = %s \
+                    GROUP BY Movie.title, Movie.movieID \
                     ORDER BY random() \
-                    LIMIT 10", (genres[0],))
+                    LIMIT 10", (genres[0][0],))
     elif len(genres) == 2:
-        cur.execute("SELECT title, string_agg(genre, ', ') \
+        cur.execute("SELECT title, string_agg(genre, ', '), Movie.movieID \
                     FROM Movie \
                     INNER JOIN Movie_Genre ON Movie.movieID = Movie_Genre.movieID \
-                    WHERE genre = %s OR genre = %s OR genre = %s \
+                    WHERE genre = %s OR genre = %s \
+                    GROUP BY Movie.title, Movie.movieID \
                     ORDER BY random() \
-                    LIMIT 10", (genres[0], genres[1],))
+                    LIMIT 10", (genres[0][0], genres[1][0],))
     else:
-        cur.execute("SELECT title, string_agg(genre, ', ') \
+        cur.execute("SELECT title, string_agg(genre, ', '), Movie.movieID \
                     FROM Movie \
                     INNER JOIN Movie_Genre ON Movie.movieID = Movie_Genre.movieID \
                     WHERE genre = %s OR genre = %s OR genre = %s \
+                    GROUP BY Movie.title, Movie.movieID \
                     ORDER BY random() \
-                    LIMIT 10", (genres[0], genres[1], genres[2],))
+                    LIMIT 10", (genres[0][0], genres[1][0], genres[2][0],))
     movies = cur.fetchall()
     cur.close()
     conn.close()
-    return jsonify([{'title': movie[0], 'genres': movie[1]} for movie in movies])
+    return jsonify([{'title': movie[0], 'genres': movie[1], 'movie_id': movie[2]} for movie in movies])
     
 @app.route('/addreview', methods=['POST'])
 def add_review():
