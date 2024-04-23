@@ -280,7 +280,7 @@ def recommendation_list():
                     GROUP BY Movie.title, Movie.movieID \
                     ORDER BY random() \
                     LIMIT 10", (genres[0][0], genres[1][0],))
-    else:
+    elif len(genres) == 3:
         cur.execute("SELECT title, string_agg(genre, ', '), Movie.movieID \
                     FROM Movie \
                     INNER JOIN Movie_Genre ON Movie.movieID = Movie_Genre.movieID \
@@ -288,6 +288,13 @@ def recommendation_list():
                     GROUP BY Movie.title, Movie.movieID \
                     ORDER BY random() \
                     LIMIT 10", (genres[0][0], genres[1][0], genres[2][0],))
+    else: #if we cannot recommend based on user's reviews, we will recommend random movies
+        cur.execute("SELECT title, string_agg(genre, ', '), Movie.movieID \
+                    FROM Movie \
+                    INNER JOIN Movie_Genre ON Movie.movieID = Movie_Genre.movieID \
+                    GROUP BY Movie.title, Movie.movieID \
+                    ORDER BY random() \
+                    LIMIT 10")
     movies = cur.fetchall()
     cur.close()
     conn.close()
