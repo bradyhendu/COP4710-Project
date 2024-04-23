@@ -14,7 +14,7 @@ def get_superuser_conn():
         host="localhost",
             database="moviesearch", #mine is lowercase, update to match yours
             user="postgres",
-            password="Harley69?!" #edit to match your password
+            password="dbisFun@24" #edit to match your password
     )
     return connection
 
@@ -256,7 +256,6 @@ def get_rating():
 def recommendation_list():
     conn = get_superuser_conn()
     cur = conn.cursor()
-    # I Could Be Wrong About Using session['username']
     cur.execute("SELECT genre, COUNT(genre) \
                 FROM Movie_Genre \
                 INNER JOIN Review ON Movie_Genre.movieID = Review.movieID \
@@ -265,21 +264,31 @@ def recommendation_list():
                 GROUP BY genre \
                 ORDER BY COUNT(genre) DESC LIMIT 3", (session['username'],))
     genres = cur.fetchall()
-    if genres is not None:
-        cur.execute("SELECT title \
+    if len(genres) == 1:
+        cur.execute("SELECT title, string_agg(genre, ', ') \
                     FROM Movie \
                     INNER JOIN Movie_Genre ON Movie.movieID = Movie_Genre.movieID \
                     WHERE genre = %s OR genre = %s OR genre = %s \
                     ORDER BY random() \
-                    LIMIT 10", (genres[0], genres[1], genres[2]))
-        movies = cur.fetchall()
-        cur.close()
-        conn.close()
-        return jsonify({'title': movie[0]} for movie in movies)
+                    LIMIT 10", (genres[0],))
+    elif len(genres) == 2:
+        cur.execute("SELECT title, string_agg(genre, ', ') \
+                    FROM Movie \
+                    INNER JOIN Movie_Genre ON Movie.movieID = Movie_Genre.movieID \
+                    WHERE genre = %s OR genre = %s OR genre = %s \
+                    ORDER BY random() \
+                    LIMIT 10", (genres[0], genres[1],))
     else:
-        cur.close()
-        conn.close()
-        return jsonify({'message': 'No Recommendations At the Moment'})
+        cur.execute("SELECT title, string_agg(genre, ', ') \
+                    FROM Movie \
+                    INNER JOIN Movie_Genre ON Movie.movieID = Movie_Genre.movieID \
+                    WHERE genre = %s OR genre = %s OR genre = %s \
+                    ORDER BY random() \
+                    LIMIT 10", (genres[0], genres[1], genres[2],))
+    movies = cur.fetchall()
+    cur.close()
+    conn.close()
+    return jsonify([{'title': movie[0], 'genres': movie[1]} for movie in movies])
     
 @app.route('/addreview', methods=['POST'])
 def add_review():
