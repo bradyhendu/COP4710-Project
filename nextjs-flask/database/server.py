@@ -367,6 +367,18 @@ def delete_review():
         app.logger.error(f"Error deleting review: {e}") # Log the error for debugging
         return {'message': 'Internal Server Error', 'error': str(e)}, 500
 
+@app.route('/update-review', methods=['POST'])
+def update_review():
+    conn = get_superuser_conn()
+    cur = conn.cursor()
+    try:
+        data = request.json
+        cur.execute("UPDATE Review SET rating = %s, review_content = %s WHERE username = %s AND reviewID = %s", (data['rating'], data['review'], session['username'], data['review_id']))
+        conn.commit()
+        return jsonify({'message': 'Review Updated Successfully'})
+    except Exception as e:
+        app.logger.error(f"Error updating review: {e}")
+        return {'message': 'Internal Server Error', 'error': str(e)}, 500
 
 if __name__ == "__main__":
     app.run(debug=True, port=8080)

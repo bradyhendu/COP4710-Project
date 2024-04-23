@@ -7,6 +7,7 @@ import Rating from '@mui/material/Rating';
 const Page = ({ params }) => {
     const [movie, setMovie] = useState({});
     const [open, setOpen] = useState(false);
+    const [openEdit, setOpenEdit] = useState(false); 
     const [user, setUser] = useState({});
     const [movieRating, setMovieRating] = useState(0.0);
     const [formData, setFormData] = useState({
@@ -125,7 +126,6 @@ const Page = ({ params }) => {
     };
 
     const deleteReview = async (reviewId) => {
-        console.log(reviewId);
         const response = await fetch(`http://localhost:8080/delete-review`, {
             method: 'POST',
             credentials: 'include',
@@ -141,6 +141,24 @@ const Page = ({ params }) => {
             setWarning('');
         } else {
             console.error('Failed to delete review');
+        }
+    }
+
+    const updateReview = async (reviewId) => {
+        const response = await fetch(`http://localhost:8080/update-review`, {
+            method: 'POST',
+            credentials: 'include',
+            body: JSON.stringify({ review_id: reviewId, rating: formData.rating, review: formData.review}),
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        });
+        if (response.ok) {
+            fetchMovieReviews();
+            fetchMovieRating();
+            setOpenEdit(false);
+        } else {
+            console.error('Failed to update review');
         }
     }
     
@@ -191,7 +209,24 @@ const Page = ({ params }) => {
                     <p className='text-white'>{review.review}</p>
                     <p className='text-white'>By: {review.username}</p>
                     {user.username === review.username && (
-                        <button className='bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded' onClick={() => deleteReview(review.review_id)}>Delete Review</button>
+                        <> 
+                            {openEdit ? (
+                                <>
+                                    <p className='text-white'>Edit Review: </p>
+                                    <form onSubmit={() => updateReview(review.review_id)} className='flex flex-col justify-center items-center bg-primary rounded-md'>
+                                        <Rating name="rating" value={formData.rating} defaultValue={review.rating} precision={0.5} onChange={handleChange}/>
+                                        <textarea name='review' value={formData.review} className='border-2 border-black rounded-lg p-2 m-4 text-black' placeholder='Edit Review' onChange={handleChange}></textarea>
+                                        <button type='submit' className='bg-secondary hover:bg-accent text-white hover:text-black rounded-lg p-2 m-4'>Submit Edit</button>
+                                        <p className='text-red-500'>{warning}</p>
+                                    </form>
+                                </>
+                            ) : (
+                                <>
+                                    <button className='bg-secondary hover:bg-accent text-white hover:text-black rounded-lg p-2' onClick={() => setOpenEdit(!openEdit)}>Update Review</button>
+                                    <button className='bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded' onClick={() => deleteReview(review.review_id)}>Delete Review</button>                       
+                                </>
+                            )}
+                        </>
                     )}
                 </div>
             ))}
