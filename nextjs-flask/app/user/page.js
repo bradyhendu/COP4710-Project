@@ -63,7 +63,7 @@ const User = () => {
           ))}
         </div>
       )}
-      <h2 className='text-3xl font-bold text-white mt-10'>Looking for new movies? Here's our reccomendations:</h2>
+      <h2 className='text-3xl font-bold text-white mt-10'>Looking for new movies? Here's our recomendations:</h2>
     </div>
   )
 }
