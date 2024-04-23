@@ -71,7 +71,6 @@ const Page = ({ params }) => {
             const data = await response.json();
             setUser(data);
         }
-        console.log(user);
     }, []);
 
     const fetchMovieRating = useCallback(async () => {
