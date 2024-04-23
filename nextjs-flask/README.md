@@ -77,6 +77,8 @@ To learn more about Next.js, take a look at the following resources:
 
 You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
 
+## PostgreSQL Database Password Encryption
+
 This application is made using the PostgreSQL database. To create a more secure login for our users, we used PostgreSQL's feature of roles/users. When the user registers an account for the sight, the password is encrypted using MD5. For us to test and run the application, we need to change the password encryption method of the PostgreSQL database to MD5, as it defaults the SCRAM-SHA-256.
 
 To change it on a MAC device:
