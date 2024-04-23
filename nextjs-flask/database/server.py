@@ -14,7 +14,7 @@ def get_superuser_conn():
         host="localhost",
             database="moviesearch", #mine is lowercase, update to match yours
             user="postgres",
-            password="Harley69?!" #edit to match your password
+            password="dbisFun@24" #edit to match your password
     )
     return connection
 
@@ -265,29 +265,42 @@ def recommendation_list():
                 ORDER BY COUNT(genre) DESC LIMIT 3", (session['username'],))
     genres = cur.fetchall()
     if len(genres) == 1:
-        cur.execute("SELECT title, string_agg(genre, ', '), Movie.movieID \
+        cur.execute("SELECT title, string_agg(DISTINCT genre, ', '), Movie.movieID \
                     FROM Movie \
                     INNER JOIN Movie_Genre ON Movie.movieID = Movie_Genre.movieID \
-                    WHERE genre = %s \
+                    WHERE Movie.movieID NOT IN \
+                        (SELECT movieID \
+                        FROM Review \
+                        WHERE username = '%s') \
                     GROUP BY Movie.title, Movie.movieID \
-                    ORDER BY random() \
-                    LIMIT 10", (genres[0][0],))
+                    HAVING string_agg(genre, ', ') LIKE %s \
+                    ORDER BY RANDOM() LIMIT 10", (session['username'], '%' + genres[0][0] + '%',))
     elif len(genres) == 2:
-        cur.execute("SELECT title, string_agg(genre, ', '), Movie.movieID \
+        cur.execute("SELECT title, string_agg(DISTINCT genre, ', '), Movie.movieID \
                     FROM Movie \
                     INNER JOIN Movie_Genre ON Movie.movieID = Movie_Genre.movieID \
-                    WHERE genre = %s OR genre = %s \
+                    WHERE Movie.movieID NOT IN \
+                        (SELECT movieID \
+                        FROM Review \
+                        WHERE username = %s) \
                     GROUP BY Movie.title, Movie.movieID \
-                    ORDER BY random() \
-                    LIMIT 10", (genres[0][0], genres[1][0],))
+                    HAVING string_agg(genre, ', ') LIKE %s \
+                        OR string_agg(genre, ', ') LIKE %s \
+                    ORDER BY RANDOM() LIMIT 10", (session['username'], '%' + genres[0][0] + '%', '%' + genres[1][0] + '%',))
     elif len(genres) == 3:
-        cur.execute("SELECT title, string_agg(genre, ', '), Movie.movieID \
+        cur.execute("SELECT title, string_agg(DISTINCT genre, ', '), Movie.movieID \
                     FROM Movie \
                     INNER JOIN Movie_Genre ON Movie.movieID = Movie_Genre.movieID \
-                    WHERE genre = %s OR genre = %s OR genre = %s \
+                    WHERE Movie.movieID NOT IN \
+                        (SELECT movieID \
+                        FROM Review \
+                        WHERE username = %s) \
                     GROUP BY Movie.title, Movie.movieID \
-                    ORDER BY random() \
-                    LIMIT 10", (genres[0][0], genres[1][0], genres[2][0],))
+                    HAVING string_agg(genre, ', ') LIKE %s \
+                        OR string_agg(genre, ', ') LIKE %s \
+                        OR string_agg(genre, ', ') LIKE %s \
+                    ORDER BY RANDOM() LIMIT 10", (session['username'], '%' + genres[0][0] + '%',
+                                                   '%' + genres[1][0] + '%', '%' + genres[2][0] + '%',))
     else: #if we cannot recommend based on user's reviews, we will recommend random movies
         cur.execute("SELECT title, string_agg(genre, ', '), Movie.movieID \
                     FROM Movie \
