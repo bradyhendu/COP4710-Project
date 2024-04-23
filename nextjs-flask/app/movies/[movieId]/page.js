@@ -210,16 +210,15 @@ const Page = ({ params }) => {
                         <Rating name='read-only' value={review.rating} precision={0.5} readOnly/>
                         <p className='text-white'>{review.review}</p>
                         <p className='text-white'>By: {review.username}</p>
-                        {user.username === review.username && (
+                        { user && user.username && (user.username === review.username) && (
                             <> 
                                 {openEdit ? (
                                     <>
                                         <p className='text-white'>Edit Review: </p>
-                                        <form onSubmit={() => updateReview(review.review_id)} className='flex flex-col justify-center items-center bg-primary rounded-md'>
-                                            <Rating name="rating" value={formData.rating} defaultValue={review.rating} precision={0.5} onChange={handleChange}/>
+                                        <form onSubmit={(e) => {e.preventDefault(); updateReview(review.review_id);}} className='flex flex-col justify-center items-center bg-primary rounded-md'>
+                                            <Rating name="rating" value={formData.rating} defaultValue={3.0} precision={0.5} onChange={handleChange}/>
                                             <textarea name='review' value={formData.review} className='border-2 border-black rounded-lg p-2 m-4 text-black' placeholder='Edit Review' onChange={handleChange}></textarea>
                                             <button type='submit' className='bg-secondary hover:bg-accent text-white hover:text-black rounded-lg p-2 m-4'>Submit Edit</button>
-                                            <p className='text-red-500'>{warning}</p>
                                         </form>
                                     </>
                                 ) : (
