@@ -256,7 +256,6 @@ def get_rating():
 def recommendation_list():
     conn = get_superuser_conn()
     cur = conn.cursor()
-    # I Could Be Wrong About Using session['username']
     cur.execute("SELECT genre, COUNT(genre) \
                 FROM Movie_Genre \
                 INNER JOIN Review ON Movie_Genre.movieID = Review.movieID \
