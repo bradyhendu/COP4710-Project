@@ -35,7 +35,6 @@ const User = () => {
     if (response.ok) {
       const data = await response.json();
       setRecommendedMovies(data)
-      console.log(data)
     }
   }, []);
   

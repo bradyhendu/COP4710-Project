@@ -299,6 +299,13 @@ def add_review():
     cur = conn.cursor()
     data = request.json
     try:
+        # Check if user has already reviewed the movie
+        cur.execute("SELECT * FROM Review WHERE username = %s AND movieID = %s", (session['username'], data['movie_id'],))
+        existing_review = cur.fetchone()
+        if existing_review:
+            return jsonify({'message': 'You have already reviewed this movie.'})
+        
+        # Insert the new review
         cur.execute("SELECT movieID FROM Movie WHERE movieID = %s", (data['movie_id'],))
         movie = cur.fetchone()
         cur.execute("INSERT INTO Review(rating, review_content, username, movieID) VALUES \

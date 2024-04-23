@@ -15,8 +15,8 @@ const Page = ({ params }) => {
         movie_id: params.movieId,
     });
     const[movieReviews, setMovieReviews] = useState([]);
-
     const[movieActors, setMovieActors] = useState([]);
+    const[warning, setWarning] = useState('');
 
     const fetchMovieDetails = useCallback(async () => {
         const response = await fetch(`http://localhost:8080/movies/${params.movieId}`, {
@@ -101,8 +101,14 @@ const Page = ({ params }) => {
         });
 
         if (response.ok) {
-            fetchMovieReviews();
-            setOpen(false);
+            const data = await response.json();
+            if(data.message === 'Review Added Successfully'){
+                fetchMovieReviews();
+                fetchMovieRating();
+                setOpen(false);
+            }else{
+                setWarning(data.message);
+            }
         } else {
             console.error('Failed to add review');
         }
@@ -132,6 +138,7 @@ const Page = ({ params }) => {
         if (response.ok) {
             fetchMovieReviews();
             fetchMovieRating();
+            setWarning('');
         } else {
             console.error('Failed to delete review');
         }
@@ -163,6 +170,7 @@ const Page = ({ params }) => {
                 <Rating name="rating" value={formData.rating} defaultValue={3.0} precision={0.5} onChange={handleChange}/>
                 <textarea name='review' value={formData.review} className='border-2 border-black rounded-lg p-2 m-4 text-black' placeholder='Add Review' onChange={handleChange}></textarea>
                 <button type='submit' className='bg-secondary hover:bg-accent text-white hover:text-black rounded-lg p-2 m-4'>Submit Review</button>
+                <p className='text-red-500'>{warning}</p>
             </form>
         )}
         <h2 className='text-3xl font-bold text-white mt-20'>Actors</h2>
