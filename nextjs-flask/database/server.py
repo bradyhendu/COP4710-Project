@@ -22,10 +22,8 @@ def get_superuser_conn():
 @app.route('/check_session', methods=['GET'])
 def check_session(): 
     if 'username' in session:
-        print("Session Exists")
         return jsonify({'username': session['username']}), 200
     else:
-        print("No Session")
         return jsonify({'username': None}), 200
     
 # Function to Log a User Out
@@ -37,34 +35,26 @@ def logout():
 # Function to Register Users
 @app.route('/register', methods=['POST'])
 def register_user():
-    print("On Register Page")
     conn = get_superuser_conn()
     cur = conn.cursor()
     # Extract form data from the request
     data = request.json
     try:
-        print("Trying SELECT Query to Find Identical User")
         cur.execute(
             "SELECT usename FROM pg_user WHERE usename = '" + str(data['username']) + "'")
         existing_user = cur.fetchone()
-        print("Fetched User")
         if existing_user:
-            print("Username Taken")
             return jsonify({'message': 'username already taken'}), 403
         else:
-            print("Username Not Taken")
             cur.execute("CREATE USER \"" + str(data['username']) + "\" WITH PASSWORD '" + str(data['password']) + "'")
             conn.commit()
-            print("Executed CREATE USER Query")
             cur.execute("GRANT movie_user TO \"" + str(data['username']) + "\"")
-            print("Executed GRANT Permissions Query")
             conn.commit()
             cur.execute("INSERT INTO Movie_User(userID, f_name, l_name, email) \
                         VALUES('" + str(data['username']) + "', '" + str(data['firstName']) + "', '" \
                         + str(data['lastName']) + "', '" + str(data['email']) + "')")
             conn.commit()
             session['username'] = data['username']
-            print("Created User")
             return jsonify({'message': 'User created successfully', 'username': data['username']}), 201
     except Exception as e:
         conn.rollback()
@@ -76,7 +66,6 @@ def register_user():
 # Function for Logging In
 @app.route('/login', methods=['POST'])
 def login_user():
-    print("On Login Page")
     conn = get_superuser_conn()
     cur = conn.cursor()
     # Extract form data from the request
@@ -85,9 +74,7 @@ def login_user():
         # Check if the username exists
         cur.execute("SELECT rolname, rolpassword FROM pg_authid WHERE rolname = '" + str(data['username']) + "'")
         existing_user = cur.fetchone()
-        print(data)
         if existing_user:
-            print("User Exists, Check Password")
             # Encrypt the Password, Concatenated w/ 'md5'
             hashed_pw = str(data['password']) + str(data['username'])
             hashed_pw = hashlib.md5(hashed_pw.encode())
@@ -124,7 +111,6 @@ def get_actors_of_movie():
     conn = get_superuser_conn()
     cur = conn.cursor()
     data = request.json
-    print(data)
     cur.execute("SELECT fname, lname, Actor.actorID\
                 FROM Actor \
                 INNER JOIN Acts ON Actor.actorID = Acts.actorID \
@@ -137,7 +123,6 @@ def get_actors_of_movie():
 
 @app.route('/getmoviesofactor', methods=['POST'])
 def get_movies_of_actor():
-    print("Getting Movies the Actor Has Starred In")
     conn = get_superuser_conn()
     cur = conn.cursor()
     data = request.json
@@ -172,7 +157,6 @@ def get_actor_details(actor_id):
 
 @app.route('/movies/<string:movie_id>', methods=['GET'])
 def get_movie_details(movie_id):
-    print(movie_id)
     conn = get_superuser_conn()
     cur = conn.cursor()
     cur.execute("SELECT title, release_date, duration, string_agg(genre, ', ') \
@@ -209,11 +193,9 @@ def get_movies():
 
 @app.route('/getmoviegenre', methods=['POST'])
 def get_movie_genre():
-    print("Getting Movies Based On Genre")
     conn = get_superuser_conn()
     cur = conn.cursor()
     data = request.json
-    print(data)
     cur.execute("SELECT title, Movie.movieID \
                 FROM Movie \
                 INNER JOIN Movie_Genre ON Movie.movieID = Movie_Genre.movieID \
@@ -373,9 +355,7 @@ def delete_review():
     conn = get_superuser_conn()
     cur = conn.cursor()
     try:
-        data = request.json 
-        print(data)
-        
+        data = request.json
         cur.execute("DELETE FROM Review WHERE username = %s AND reviewID = %s", (session['username'], data['review_id'])) # Corrected to access movieID
         conn.commit()
         return jsonify({'message': 'Review Deleted Successfully'})
