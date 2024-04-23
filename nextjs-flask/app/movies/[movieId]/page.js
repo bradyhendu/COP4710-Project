@@ -7,6 +7,7 @@ import Rating from '@mui/material/Rating';
 const Page = ({ params }) => {
     const [movie, setMovie] = useState({});
     const [open, setOpen] = useState(false);
+    const [user, setUser] = useState({});
     const [formData, setFormData] = useState({
         rating: 3,
         review: '',
@@ -60,6 +61,16 @@ const Page = ({ params }) => {
         }
     }, [params.movieId]);
 
+    const fetchUserDetails = useCallback(async () => {
+        const response = await fetch('http://localhost:8080/user-details', {
+            credentials: 'include',
+        });
+        if (response.ok) {
+            const data = await response.json();
+            setUser(data);
+        }
+    }, []);
+
     const addReview = useCallback(async (event) => {
         event.preventDefault();
         const response = await fetch(`http://localhost:8080/addreview`, {
@@ -89,13 +100,32 @@ const Page = ({ params }) => {
         }
         console.log(formData)
     };
+
+    const deleteReview = async (reviewId) => {
+        console.log(reviewId);
+        const response = await fetch(`http://localhost:8080/delete-review`, {
+            method: 'POST',
+            credentials: 'include',
+            body: JSON.stringify({ review_id: reviewId }),
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        });
+        
+        if (response.ok) {
+            fetchMovieReviews();
+        } else {
+            console.error('Failed to delete review');
+        }
+    }
     
     
     useEffect(() => {
         fetchMovieDetails();
         fetchMovieActors();
         fetchMovieReviews();
-    }, [fetchMovieDetails, fetchMovieActors, fetchMovieReviews]); 
+        fetchUserDetails();
+    }, [fetchMovieDetails, fetchMovieActors, fetchMovieReviews, fetchUserDetails]); 
 
     return (
     <div className="flex items-center flex-col justify-center mt-10">
@@ -125,10 +155,13 @@ const Page = ({ params }) => {
         <h2 className='text-3xl font-bold text-white mt-20'>Reviews</h2>
         <div className='flex flex-wrap justify-center items-center'>
             {movieReviews.map((review, index) => (
-                <div key={index} className='m-4 p-4 bg-primary rounded-lg'>
+                <div key={index} className='m-4 p-4 bg-primary rounded-lg flex items-center flex-col space-y-1'>
                     <Rating name='read-only' value={review.rating} precision={0.5} readOnly/>
                     <p className='text-white'>{review.review}</p>
                     <p className='text-white'>By: {review.username}</p>
+                    {user.username === review.username && (
+                        <button className='bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded' onClick={() => deleteReview(review.review_id)}>Delete Review</button>
+                    )}
                 </div>
             ))}
         </div>

@@ -228,14 +228,14 @@ def get_reviews():
     conn = get_superuser_conn()
     cur = conn.cursor()
     data = request.json
-    cur.execute("SELECT username, rating, review_content \
+    cur.execute("SELECT username, rating, review_content, reviewid \
                 FROM Review \
                 INNER JOIN Movie ON Review.movieID = Movie.movieID \
                 WHERE Movie.movieid = %s", (data['movie_id'],))
     reviews = cur.fetchall()
     cur.close()
     conn.close()
-    return jsonify([{'username': review[0], 'rating': review[1], 'review': review[2]} for review in reviews])
+    return jsonify([{'username': review[0], 'rating': review[1], 'review': review[2], 'review_id': review[3]} for review in reviews])
 
 @app.route('/getrating', methods=['GET'])
 def get_rating():
@@ -325,6 +325,22 @@ def get_user_details():
     cur.close()
     conn.close()
     return jsonify({'first_name': user[0], 'last_name': user[1], 'email': user[2], 'username': session['username']})
+
+@app.route('/delete-review', methods=['POST'])
+def delete_review():
+    conn = get_superuser_conn()
+    cur = conn.cursor()
+    try:
+        data = request.json 
+        print(data)
+        
+        cur.execute("DELETE FROM Review WHERE username = %s AND reviewID = %s", (session['username'], data['review_id'])) # Corrected to access movieID
+        conn.commit()
+        return jsonify({'message': 'Review Deleted Successfully'})
+    except Exception as e:
+        app.logger.error(f"Error deleting review: {e}") # Log the error for debugging
+        return {'message': 'Internal Server Error', 'error': str(e)}, 500
+
 
 if __name__ == "__main__":
     app.run(debug=True, port=8080)
