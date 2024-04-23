@@ -21,7 +21,6 @@ const Actors = () => {
 
   useEffect(() => {
     fetchActors();
-    console.log(actors);
   }, [fetchActors]);
 
   //handle search term

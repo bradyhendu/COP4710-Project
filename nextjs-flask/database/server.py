@@ -141,14 +141,12 @@ def get_movies_of_actor():
     conn = get_superuser_conn()
     cur = conn.cursor()
     data = request.json
-    print(data)
     cur.execute("SELECT title, Movie.movieID \
                 FROM Movie \
                 INNER JOIN Acts ON Movie.movieID = Acts.movieID \
                 INNER JOIN Actor ON Acts.actorID = Actor.actorID \
                 WHERE Actor.actorID = %s", (data['actor_id'],))
     movies = cur.fetchall()
-    print("movies: ", movies)
     cur.close()
     conn.close()
     return jsonify([{'movie_title': movie[0], 'movie_id': movie[1]} for movie in movies])
@@ -225,13 +223,11 @@ def get_movie_genre():
     conn.close()
     return jsonify([{'movie_title': movie[0], 'movie_id': movie[1]} for movie in movies])
 
-# NOTE: Function Below Haven't Been Tested
 @app.route('/getreviews', methods=['POST'])
 def get_reviews():
     conn = get_superuser_conn()
     cur = conn.cursor()
     data = request.json
-    print(data)
     cur.execute("SELECT username, rating, review_content \
                 FROM Review \
                 INNER JOIN Movie ON Review.movieID = Movie.movieID \
@@ -302,6 +298,33 @@ def add_review():
     finally:
         cur.close()
         conn.close()
+        
+@app.route('/user-reviewed-movies', methods=['GET'])
+def get_user_reviews():
+    conn = get_superuser_conn()
+    cur = conn.cursor()
+    cur.execute("SELECT Movie.title, Movie.movieID, string_agg(genre, ', ') \
+                FROM Movie \
+                INNER JOIN Review ON Review.movieID = Movie.movieID \
+                INNER JOIN Movie_Genre ON Movie.movieID = Movie_Genre.movieID \
+                WHERE username = %s \
+                GROUP BY Movie.title, Movie.movieID", (session['username'],))
+    movies = cur.fetchall()
+    cur.close()
+    conn.close()
+    return jsonify([{'title': movie[0], 'movie_id': movie[1], 'genres': movie[2]} for movie in movies])
+
+@app.route('/user-details', methods=['GET'])
+def get_user_details():
+    conn = get_superuser_conn()
+    cur = conn.cursor()
+    cur.execute("SELECT f_name, l_name, email \
+                FROM Movie_User \
+                WHERE userID = %s", (session['username'],))
+    user = cur.fetchone()
+    cur.close()
+    conn.close()
+    return jsonify({'first_name': user[0], 'last_name': user[1], 'email': user[2], 'username': session['username']})
 
 if __name__ == "__main__":
     app.run(debug=True, port=8080)

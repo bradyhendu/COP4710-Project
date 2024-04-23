@@ -73,6 +73,7 @@ const Page = ({ params }) => {
 
         if (response.ok) {
             fetchMovieReviews();
+            setOpen(false);
         } else {
             console.error('Failed to add review');
         }
@@ -97,7 +98,7 @@ const Page = ({ params }) => {
     }, [fetchMovieDetails, fetchMovieActors, fetchMovieReviews]); 
 
     return (
-    <div className="flex items-center flex-col justify-center mt-20">
+    <div className="flex items-center flex-col justify-center mt-10">
         <h1 className='text-5xl font-bold text-white text-center'>{movie.title}</h1>
         <div className='flex flex-col my-4 text-center'>
             <h4 className='text-white text-xl'>Genre(s): {movie.genres}</h4>
