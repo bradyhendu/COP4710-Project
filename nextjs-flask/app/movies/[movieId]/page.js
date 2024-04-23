@@ -8,7 +8,7 @@ const Page = ({ params }) => {
     const [movie, setMovie] = useState({});
     const [open, setOpen] = useState(false);
     const [openEdit, setOpenEdit] = useState(false); 
-    const [user, setUser] = useState({});
+    const [user, setUser] = useState(null);
     const [movieRating, setMovieRating] = useState(0.0);
     const [formData, setFormData] = useState({
         rating: 3,
@@ -71,6 +71,7 @@ const Page = ({ params }) => {
             const data = await response.json();
             setUser(data);
         }
+        console.log(user);
     }, []);
 
     const fetchMovieRating = useCallback(async () => {
@@ -172,67 +173,68 @@ const Page = ({ params }) => {
     }, [fetchMovieDetails, fetchMovieActors, fetchMovieReviews, fetchUserDetails, fetchMovieRating]); 
 
     return (
-    <div className="flex items-center flex-col justify-center mt-10">
-        <h1 className='text-5xl font-bold text-white text-center'>{movie.title}</h1>
-        <div className='flex flex-col my-4 text-center '>
-            <div className='flex flex-row justify-center items-center m-4 bg-primary rounded-md p-4'>
-                <h4 className='text-white text-xl'>User's Average Rating: </h4>
-                <Rating name='read-only' value={movieRating} precision={0.5} readOnly/>
-            </div>
-            <h4 className='text-white text-xl'>Genre(s): {movie.genres}</h4>
-            <p className='text-white'>Duration: {movie.duration}, Released: {movie.release_date}</p>
-        </div>
-        <button onClick={() => setOpen(!open)} className='bg-primary hover:bg-secondary text-white hover:text-primary rounded-lg p-2 mt-4'>Add Review</button>
-        {open && (
-            <form onSubmit={addReview} className='flex flex-col justify-center items-center m-5 p-8 bg-primary rounded-md'>
-                <Rating name="rating" value={formData.rating} defaultValue={3.0} precision={0.5} onChange={handleChange}/>
-                <textarea name='review' value={formData.review} className='border-2 border-black rounded-lg p-2 m-4 text-black' placeholder='Add Review' onChange={handleChange}></textarea>
-                <button type='submit' className='bg-secondary hover:bg-accent text-white hover:text-black rounded-lg p-2 m-4'>Submit Review</button>
-                <p className='text-red-500'>{warning}</p>
-            </form>
-        )}
-        <h2 className='text-3xl font-bold text-white mt-20'>Actors</h2>
-        <div className='flex flex-wrap justify-center'>
-            {movieActors.map((actor, index) => (
-                <Link key={index} href={`/actors/${actor.actor_id}`}>
-                    <div key={index} className='m-2 p-2 border-2 border-black rounded-lg bg-primary'>
-                        <h2 className='text-2xl font-bold text-white'>{actor.actor_name}</h2>
-                    </div>
-                </Link>
-            ))}
-        </div>
-        <h2 className='text-3xl font-bold text-white mt-20'>Reviews</h2>
-        <div className='flex flex-wrap justify-center items-center'>
-            {movieReviews.map((review, index) => (
-                <div key={index} className='m-4 p-4 bg-primary rounded-lg flex items-center flex-col space-y-1'>
-                    <Rating name='read-only' value={review.rating} precision={0.5} readOnly/>
-                    <p className='text-white'>{review.review}</p>
-                    <p className='text-white'>By: {review.username}</p>
-                    {user.username === review.username && (
-                        <> 
-                            {openEdit ? (
-                                <>
-                                    <p className='text-white'>Edit Review: </p>
-                                    <form onSubmit={() => updateReview(review.review_id)} className='flex flex-col justify-center items-center bg-primary rounded-md'>
-                                        <Rating name="rating" value={formData.rating} defaultValue={review.rating} precision={0.5} onChange={handleChange}/>
-                                        <textarea name='review' value={formData.review} className='border-2 border-black rounded-lg p-2 m-4 text-black' placeholder='Edit Review' onChange={handleChange}></textarea>
-                                        <button type='submit' className='bg-secondary hover:bg-accent text-white hover:text-black rounded-lg p-2 m-4'>Submit Edit</button>
-                                        <p className='text-red-500'>{warning}</p>
-                                    </form>
-                                </>
-                            ) : (
-                                <>
-                                    <button className='bg-secondary hover:bg-accent text-white hover:text-black rounded-lg p-2' onClick={() => setOpenEdit(!openEdit)}>Update Review</button>
-                                    <button className='bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded' onClick={() => deleteReview(review.review_id)}>Delete Review</button>                       
-                                </>
-                            )}
-                        </>
-                    )}
+        <div className="flex items-center flex-col justify-center mt-10">
+            <h1 className='text-5xl font-bold text-white text-center'>{movie.title}</h1>
+            <div className='flex flex-col my-4 text-center '>
+                <div className='flex flex-row justify-center items-center m-4 bg-primary rounded-md p-4'>
+                    <h4 className='text-white text-xl'>User's Average Rating: </h4>
+                    <Rating name='read-only' value={movieRating} precision={0.5} readOnly/>
                 </div>
-            ))}
+                <h4 className='text-white text-xl'>Genre(s): {movie.genres}</h4>
+                <p className='text-white'>Duration: {movie.duration}, Released: {movie.release_date}</p>
+            </div>
+            {user && (
+                <button onClick={() => setOpen(!open)} className='bg-primary hover:bg-secondary text-white hover:text-primary rounded-lg p-2 mt-4'>Add Review</button>
+            )}
+            {open && (
+                <form onSubmit={addReview} className='flex flex-col justify-center items-center m-5 p-8 bg-primary rounded-md'>
+                    <Rating name="rating" value={formData.rating} defaultValue={3.0} precision={0.5} onChange={handleChange}/>
+                    <textarea name='review' value={formData.review} className='border-2 border-black rounded-lg p-2 m-4 text-black' placeholder='Add Review' onChange={handleChange}></textarea>
+                    <button type='submit' className='bg-secondary hover:bg-accent text-white hover:text-black rounded-lg p-2 m-4'>Submit Review</button>
+                    <p className='text-red-500'>{warning}</p>
+                </form>
+            )}
+            <h2 className='text-3xl font-bold text-white mt-20'>Actors</h2>
+            <div className='flex flex-wrap justify-center'>
+                {movieActors.map((actor, index) => (
+                    <Link key={index} href={`/actors/${actor.actor_id}`}>
+                        <div key={index} className='m-2 p-2 border-2 border-black rounded-lg bg-primary'>
+                            <h2 className='text-2xl font-bold text-white'>{actor.actor_name}</h2>
+                        </div>
+                    </Link>
+                ))}
+            </div>
+            <h2 className='text-3xl font-bold text-white mt-20'>Reviews</h2>
+            <div className='flex flex-wrap justify-center items-center'>
+                {movieReviews.map((review, index) => (
+                    <div key={index} className='m-4 p-4 bg-primary rounded-lg flex items-center flex-col space-y-1'>
+                        <Rating name='read-only' value={review.rating} precision={0.5} readOnly/>
+                        <p className='text-white'>{review.review}</p>
+                        <p className='text-white'>By: {review.username}</p>
+                        {user.username === review.username && (
+                            <> 
+                                {openEdit ? (
+                                    <>
+                                        <p className='text-white'>Edit Review: </p>
+                                        <form onSubmit={() => updateReview(review.review_id)} className='flex flex-col justify-center items-center bg-primary rounded-md'>
+                                            <Rating name="rating" value={formData.rating} defaultValue={review.rating} precision={0.5} onChange={handleChange}/>
+                                            <textarea name='review' value={formData.review} className='border-2 border-black rounded-lg p-2 m-4 text-black' placeholder='Edit Review' onChange={handleChange}></textarea>
+                                            <button type='submit' className='bg-secondary hover:bg-accent text-white hover:text-black rounded-lg p-2 m-4'>Submit Edit</button>
+                                            <p className='text-red-500'>{warning}</p>
+                                        </form>
+                                    </>
+                                ) : (
+                                    <>
+                                        <button className='bg-secondary hover:bg-accent text-white hover:text-black rounded-lg p-2' onClick={() => setOpenEdit(!openEdit)}>Update Review</button>
+                                        <button className='bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded' onClick={() => deleteReview(review.review_id)}>Delete Review</button>                       
+                                    </>
+                                )}
+                            </>
+                        )}
+                    </div>
+                ))}
+            </div>
         </div>
-
-    </div>
     );
 };
 

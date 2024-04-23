@@ -14,7 +14,7 @@ def get_superuser_conn():
         host="localhost",
             database="moviesearch", #mine is lowercase, update to match yours
             user="postgres",
-            password="dbisFun@24" #edit to match your password
+            password="Harley69?!" #edit to match your password
     )
     return connection
 
@@ -357,6 +357,9 @@ def get_user_reviews():
 def get_user_details():
     conn = get_superuser_conn()
     cur = conn.cursor()
+    if 'username' not in session:
+        return jsonify({'message': 'User Not Logged In'}), 401
+    
     cur.execute("SELECT f_name, l_name, email \
                 FROM Movie_User \
                 WHERE userID = %s", (session['username'],))
