@@ -22,10 +22,8 @@ def get_superuser_conn():
 @app.route('/check_session', methods=['GET'])
 def check_session(): 
     if 'username' in session:
-        print("Session Exists")
         return jsonify({'username': session['username']}), 200
     else:
-        print("No Session")
         return jsonify({'username': None}), 200
     
 # Function to Log a User Out
@@ -113,7 +111,6 @@ def get_actors_of_movie():
     conn = get_superuser_conn()
     cur = conn.cursor()
     data = request.json
-    print(data)
     cur.execute("SELECT fname, lname, Actor.actorID\
                 FROM Actor \
                 INNER JOIN Acts ON Actor.actorID = Acts.actorID \
