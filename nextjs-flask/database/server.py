@@ -260,7 +260,7 @@ def recommendation_list():
                 FROM Movie_Genre \
                 INNER JOIN Review ON Movie_Genre.movieID = Review.movieID \
                 INNER JOIN Movie ON Movie_Genre.movieID = Movie.movieID \
-                WHERE username = %s AND rating >= 4.0 \
+                WHERE username = %s AND rating >= 3.5 \
                 GROUP BY genre \
                 ORDER BY COUNT(genre) DESC LIMIT 3", (session['username'],))
     genres = cur.fetchall()
