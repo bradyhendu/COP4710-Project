@@ -98,4 +98,3 @@ To change it on a MAC device:
 
 To change it on a Windows device (using PowerShell), the steps are the same, but you don't need to type sudo -su postgres, as sudo isn't a command on Windows. Also, editing tools like nano or vim don't work on Windows. Instead use notepad.exe <file_name> to edit the changes mentioned above.
 
-Hope you were able to change the encryption method for creating roles and users!
